@@ -4,6 +4,9 @@ module.exports = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
     ],
   theme: {
+    minHeight: {
+      '1/8': '8vh'
+    },
     extend: {},
   },
   plugins: [],
