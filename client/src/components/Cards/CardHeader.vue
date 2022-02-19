@@ -6,37 +6,28 @@
 		</div>
 		<div class="grid grid-cols-4 p-4 place-content-evenly divide-x">
 			<div>
-				<CardStats 
-					kpiHeader="Lorem"
-					kpiBigNumber="69"
-					kpiSubHeader="Tweets"
-				/>
+				<CardStats/>
 			</div>
 			<div>
-				<CardStats 
-					kpiHeader="Lorem"
-					kpiBigNumber="69"
-					kpiSubHeader="Tweets"
-				/>
+				<CardStats/>
 			</div>
 			<div>
-				<CardStats 
-					kpiHeader="Lorem"
-					kpiBigNumber="69"
-					kpiSubHeader="Tweets"
-				/>
+				<CardStats/>
 			</div>
 			<div>
-				<CardStats 
-					kpiHeader="Lorem"
-					kpiBigNumber="69"
-					kpiSubHeader="Tweets"
-				/>
+				<CardStats/>
 			</div>
 		</div>
 	</div>
 </template>
 
-<script setup>
+<script>
 	import CardStats from './CardStats.vue'
+	import CardBarChart from './CardBarChart.vue'
+
+	export default {
+		components: {
+			CardStats
+		}
+	}
 </script>

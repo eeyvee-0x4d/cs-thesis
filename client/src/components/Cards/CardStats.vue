@@ -6,14 +6,22 @@
 	</div>
 </template>
 
-<script setup>
-	import { defineProps } from 'vue'
-
-	const name = 'card-stats';
-	const props = defineProps({
-		kpiHeader: String,
-		kpiBigNumber: String,
-		kpiSubHeader: String
-	});
-
+<script>
+	export default {
+		name: "CardStats",
+		props: {
+			kpiHeader: {
+				type: String,
+				default: 'Lorem'
+			},
+			kpiBigNumber: {
+				type: String,
+				default: '69'
+			},
+			kpiSubHeader: {
+				type: String,
+				default: 'Tweets'
+			}
+		}
+	}
 </script>
