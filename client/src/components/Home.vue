@@ -10,7 +10,13 @@
 						<CardBarChart />
 					</div>
 					<div class="w-full px-4 border">
-						<Tabs />
+						<CardLineChart />
+					</div>
+					<div class="w-full px-4 border">
+						<CardLineChart />
+					</div>
+					<div class="w-full px-4 border">
+						<CardTable />
 					</div>
 				</div>
 			</div>
@@ -18,10 +24,22 @@
 	</div>
 </template>
 
-<script setup>
+<script>
+	import { defineComponent } from 'vue';
+
 	import CardHeader from './Cards/CardHeader.vue'
 	import CardBarChart from './Cards/CardBarChart.vue'
-	import Tabs from './Core/Tabs.vue'
-	import Tab from './Core/Tab.vue'
+	import CardLineChart from './Cards/CardLineChart.vue'
+	import CardTable from './Cards/CardTable.vue'
+
+	export default defineComponent({
+		name: 'Home',
+		components: {
+			CardHeader,
+			CardBarChart,
+			CardLineChart,
+			CardTable
+		}
+	});
 	
 </script>
