@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<ul class="flex flex-auto">
-			<li
-				v-for="(tab, index) in tabs"
+		<ul class="flex flex-auto justify-items-stretch">
+			<li class="p-4 border w-1/4" 
+				v-for="tab, index in tabs"
 				:key="tab.title"
 				@click="selectTab(index)"
 			>
@@ -20,23 +20,25 @@
 		name: 'Tabs',
 		data() {
 			return {
-				selectedIndex: 0,
 				tabs: []
 			}
 		},
-		created() {
-			this.tabs = this.$children;
+		onBeforeMount() {
+			if(slots.default) {
+				state.tabs = slots.default().filter((child) =>child.type.name === "Tab")
+			}
 		},
 		mounted() {
 			this.selectTab(0)
 		},
 		methods: {
-			selectTab(i) {
-				this.selectedIndex = i;
-
+			selectTab(selectedTab) {
+				// this.tabs.forEach(tab => {
+				// 	tab.isActive = (tab.title === selectedTab)
+				// });
 				this.tabs.forEach((tab, index) => {
-					tab.isActive = (index === i)
-				});
+					tab.isActive = (index === selectedTab)
+				});	
 			}
 		}
 	});

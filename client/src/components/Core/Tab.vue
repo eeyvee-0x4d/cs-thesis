@@ -5,18 +5,22 @@
 </template>
 
 <script>
-	export default {
+	import { defineComponent } from 'vue';
+
+
+	export default defineComponent({
+		name: 'Tab',
 		props: {
-			title: {
-				type: String,
-				default: 'Tab'
-			}
+			title: { type: String, dafault: 'Tab'}
 		},
 		data() {
 			return {
 				isActive: true
 			}
+		},
+		created() {
+			this.$parent.tabs.push(this)
 		}
-	}
+	});
 	
 </script>
