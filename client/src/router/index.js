@@ -1,11 +1,29 @@
 import { createWebHistory, createRouter} from "vue-router"
-import Home from '../components/Home.vue'
+import Home from '../components/Home.vue';
+import Main from '../layouts/Main.vue';
+import CardUpload from '../components/Cards/CardUpload.vue';
+import Visualization from '../views/Visualization.vue';
 
 const routes = [
 	{
+		// path: '/',
+		// name: 'Home',
+		// component: Home,
+
 		path: '/',
-		name: 'Home',
-		component: Home,
+		redirect: '/upload',
+		name: 'Main',
+		component: Main,
+		children: [
+			{
+				path: '/upload',
+				component: CardUpload
+			},
+			{
+				path: '/visualization',
+				component: Visualization
+			}
+		]
 	}
 ];
 

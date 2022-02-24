@@ -2,9 +2,9 @@
 	<div class="relative w-full p-4">
 		<div class="rounded-t mb-0 bg-transparent">
 			<div class="flex flex-wrap items-center">
-				<div class="relative w-full max-w-full flex-grow flex-1">
+				<div class="relative pb-4 w-full max-w-full flex-grow flex-1">
 					<h2 class=" text-base font-bold">
-						Chart Title
+						{{ title }}
 					</h2>
 				</div>
 			</div>
@@ -45,6 +45,9 @@
 	export default defineComponent({
 		name: 'CardTable',
 		components: {
+		},
+		props: {
+			title: { type: String, dafault: "Title"}
 		},
 		data() {
 			const data = [

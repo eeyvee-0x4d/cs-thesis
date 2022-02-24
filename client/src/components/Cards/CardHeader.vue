@@ -1,8 +1,7 @@
 <template>
-	<div class="relative flex flex-col border p-4 divide-y divide-solid">
-		<div>
-			<h1 class="text-4xl font-bold">Dashboard Header</h1>
-			<p class="text-base">Dashboard Description</p>
+	<div class="relative flex flex-col border divide-y divide-solid">
+		<div class="p-4 text-base text-left font-bold">
+			<h1>Data Overview</h1>
 		</div>
 		<div class="grid grid-cols-4 p-4 place-content-evenly divide-x">
 			<div>
