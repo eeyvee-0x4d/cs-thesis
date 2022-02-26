@@ -2,8 +2,9 @@
 	<div class="relative m-auto w-80vw py-4 space-y-4">
 		<!-- Dashboard Header start -->
 		<div class="relative p-4 border border-4 rounded-lg">
-			<h1 class="text-4xl font-bold">Dashboard Title</h1>
-			<p class="text-base font-normal">Dashboad Description</p>
+			<h1 class="text-4xl font-bold">Sentiment Analysis</h1>
+			<p class="text-base font-normal">Visualizing The Public Perception of The COVID-19 Vaccine Brands Using
+Positive-to-Negative Sentiment Ratio</p>
 		</div>
 		<!-- Dashboard Header end -->
 
