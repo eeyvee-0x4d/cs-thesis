@@ -9,18 +9,29 @@
 <script>
 	export default {
 		name: "CardStats",
-		props: {
-			kpiHeader: {
-				type: String,
-				default: 'Lorem'
-			},
-			kpiBigNumber: {
-				type: String,
-				default: '69'
-			},
-			kpiSubHeader: {
-				type: String,
-				default: 'Tweets'
+		// props: {
+		// 	kpiHeader: {
+		// 		type: String,
+		// 		default: 'Lorem'
+		// 	},
+		// 	kpiBigNumber: {
+		// 		type: String,
+		// 		default: '69'
+		// 	},
+		// 	kpiSubHeader: {
+		// 		type: String,
+		// 		default: 'Tweets'
+		// 	}
+		// },
+		data() {
+			let kpiHeader = ''
+			let kpiBigNumber = ''
+			let kpiSubHeader = ''
+
+			return {
+				kpiHeader,
+				kpiBigNumber,
+				kpiSubHeader
 			}
 		}
 	}

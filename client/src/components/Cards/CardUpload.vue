@@ -189,7 +189,7 @@
 						throw new Error(`HTTP error! status: ${response.status}`)
 					};
 
-					return await response
+					return await response;
 				}
 				this.loading = true
 				uploadFiles()

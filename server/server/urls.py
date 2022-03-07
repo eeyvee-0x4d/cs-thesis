@@ -20,5 +20,6 @@ from backend import views
 
 urlpatterns = [
     path('upload/', views.upload, name='upload'),
+    path('data_overview/', views.data_overview, name='data_overview'),
 
 ]
