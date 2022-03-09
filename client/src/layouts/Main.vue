@@ -1,5 +1,5 @@
 <template>
-	<div class="relative m-auto w-80vw py-4 space-y-4">
+	<div class="relative m-auto md:w-8/12 sm:w-4/5 py-4 space-y-4">
 		<!-- Dashboard Header start -->
 		<div class="relative p-4 border border-4 rounded-lg">
 			<h1 class="text-4xl font-bold">Sentiment Analysis</h1>

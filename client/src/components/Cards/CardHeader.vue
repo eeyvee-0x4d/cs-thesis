@@ -26,7 +26,7 @@
 
 	import { ref } from 'vue';
 
-	import axios from 'axios'
+	import axios from 'axios';
 
 	export default {
 		name: 'CardHeader',
@@ -80,7 +80,6 @@
 		mounted() {
 			this.fetchData()
 				.then(response => {
-					console.log(response.data)
 					this.$refs.cardStat1.kpiHeader = 'Pfizer'
 					this.$refs.cardStat1.kpiBigNumber = (response.data.pfizer === null) ? 'n.d' : this.abbrNum(response.data.pfizer, 1)
 					this.$refs.cardStat1.kpiSubHeader = (response.data.pfizer === null) ? '' : 'Tweets'

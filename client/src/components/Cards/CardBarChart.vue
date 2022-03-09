@@ -11,7 +11,12 @@
 		</div>
 		<div class="px-4 flex-auto">
 			<div class="relative h-350-px">
-				<BarChart :chartData="testData" />
+				<div v-if="fetchingData" class="m-auto text-center font-bold text-base">
+					<span>
+						Loading data...
+					</span>
+				</div>
+				<BarChart v-else :chartData="chartData" />
 			</div>
 		</div>
 	</div>
@@ -21,6 +26,8 @@
 	import { defineComponent } from 'vue';
 	import { Chart, registerables } from "chart.js";
 	import { BarChart } from 'vue-chart-3';
+
+	import axios from 'axios';
 
 	Chart.register(...registerables);
 
@@ -32,8 +39,21 @@
 		props: {
 			chartTitle: { type: String, default: 'Chart Title'}
 		},
-		setup() {
-			const testData = {
+		methods: {
+			async fetchData() {
+				this.fetchingData = true
+
+				let response = await axios.get(import.meta.env.VITE_DJANGO_BASE_URL + '/sentiment_overview/')
+
+				if (response.statusText !== "OK") {
+						throw new Error(`HTTP error! status: ${response.status}`)
+					};
+
+				return await response;
+			}
+		},
+		data() {
+			const chartData = {
 				labels: ['Pfizer', 'Sinovac', 'AstraZeneca', 'Moderna'],
 				datasets: [
 					{
@@ -47,7 +67,49 @@
 				],
 			};
 
-			return {testData};
+			let fetchingData = false;
+
+			return {
+				chartData,
+				fetchingData
+			};
 		},
+		mounted() {
+			this.fetchData()
+				.then(response => {
+
+					this.chartData = {
+						labels: [],
+						datasets: [
+							{
+								label: "Positive",
+								data: []
+							},
+							{
+								label: "Negative",
+								data: []
+							}
+						]
+					};
+
+					response.data.forEach(item => {
+						
+						if(item.sentiments !== null) {
+							this.chartData.labels.push((item.name.charAt(0).toUpperCase() + item.name.slice(1)))
+							this.chartData.datasets[0].data.push(item.sentiments[0]['positive'])
+							this.chartData.datasets[1].data.push(item.sentiments[0]['negative'])
+						}
+						else {
+							this.chartData.labels.push((item.name.charAt(0).toUpperCase() + item.name.slice(1)))
+							this.chartData.datasets[0].data.push(0)
+							this.chartData.datasets[1].data.push(0)
+						}
+
+						this.fetchingData = false
+						console.log(this.fetchingData)
+					});
+				})
+				.catch()
+		}
 	});
 </script>
