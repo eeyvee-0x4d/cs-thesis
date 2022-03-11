@@ -11,7 +11,7 @@
 	export default defineComponent({
 		name: 'Tab',
 		props: {
-			title: { type: String, dafault: 'Tab'}
+			title: { type: String, default: 'Tab'}
 		},
 		data() {
 			return {

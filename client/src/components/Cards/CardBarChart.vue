@@ -77,6 +77,7 @@
 		mounted() {
 			this.fetchData()
 				.then(response => {
+					console.log(response)
 
 					this.chartData = {
 						labels: [],
@@ -106,7 +107,6 @@
 						}
 
 						this.fetchingData = false
-						console.log(this.fetchingData)
 					});
 				})
 				.catch()

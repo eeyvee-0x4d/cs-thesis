@@ -3,7 +3,12 @@
 		<div class="p-4 text-base text-left font-bold">
 			<h1>Data Overview</h1>
 		</div>
-		<div class="grid grid-cols-4 p-4 place-content-evenly divide-x">
+		<div v-if="isFetchingData" class="w-full m-auto p-4 text-center font-bold text-base">
+			<span>
+				Loading data...
+			</span>
+		</div>
+		<div v-else class="grid grid-cols-4 p-4 place-content-evenly divide-x">
 			<div>
 				<CardStats ref="cardStat1"/>
 			</div>
@@ -38,12 +43,15 @@
 				console.log('Hello')
 			},
 			async fetchData() {
+				this.isFetchingData = true
 
 				let response = await axios.get(import.meta.env.VITE_DJANGO_BASE_URL + '/data_overview/');
 
 				if (response.statusText !== "OK") {
-						throw new Error(`HTTP error! status: ${response.status}`)
-					};
+					throw new Error(`HTTP error! status: ${response.status}`)
+				};
+
+				this.isFetchingData = false
 
 				return await response;
 			},
@@ -77,9 +85,18 @@
 			    return number;
 			},
 		},
+		data() {
+			let isFetchingData = false
+
+			return {
+				isFetchingData
+			}
+		},
 		mounted() {
 			this.fetchData()
 				.then(response => {
+					console.log(response)
+
 					this.$refs.cardStat1.kpiHeader = 'Pfizer'
 					this.$refs.cardStat1.kpiBigNumber = (response.data.pfizer === null) ? 'n.d' : this.abbrNum(response.data.pfizer, 1)
 					this.$refs.cardStat1.kpiSubHeader = (response.data.pfizer === null) ? '' : 'Tweets'
@@ -95,6 +112,8 @@
 					this.$refs.cardStat4.kpiHeader = 'Moderna'
 					this.$refs.cardStat4.kpiBigNumber = (response.data.moderna === null) ? 'n.d' : this.abbrNum(response.data.moderna, 1)
 					this.$refs.cardStat4.kpiSubHeader = (response.data.moderna === null) ? '' : 'Tweets'
+
+
 				})
 				.catch()
 		}

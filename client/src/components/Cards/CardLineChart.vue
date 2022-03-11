@@ -11,7 +11,7 @@
 		</div>
 		<div class="px-4 flex-auto">
 			<div class="relative h-350-px">
-				<LineChart :chartData="testData" />
+				<LineChart :chartData="chartData" />
 			</div>
 		</div>
 	</div>
@@ -21,6 +21,8 @@
 	import { defineComponent } from 'vue';
 	import { Chart, registerables} from 'chart.js';
 	import { LineChart } from 'vue-chart-3';
+
+	import axios from 'axios';
 
 	Chart.register(...registerables);
 
@@ -32,17 +34,23 @@
 		props: {
 			chartTitle: { type: String, default: "Line Chart"}
 		},
-		setup() {
-			const testData = {
-				labels: ['Jan', 'Feb'],
-				datasets: [{
-					label: 'Test',
-					data: [69,69]
-
-				}]
+		data() {
+			const chartData = {
+				labels: [],
+				datasets: [
+					{
+						label: 'Positive',
+						data: []
+					},
+					{
+						label: 'Negative',
+						data: []
+					}
+				]
 			};
 
-			return {testData};
+			return {chartData};
 		}
+
 	});
 </script>
