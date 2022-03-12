@@ -22,5 +22,6 @@ urlpatterns = [
     path('upload/', views.upload, name='upload'),
     path('data_overview/', views.data_overview, name='data_overview'),
     path('sentiment_overview/', views.sentiment_overview, name='sentiment_overview'),
-    path('sentiment_overtime/', views.sentiment_overtime, name='sentiment_overtime'),
+    path('sentiment_trend/', views.sentiment_trend, name='sentiment_trend'),
+    path('all_data/', views.all_data, name='all_data'),
 ]

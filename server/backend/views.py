@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.exceptions import APIException
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -10,9 +11,12 @@ from collections import Counter, OrderedDict
 
 from .utils import preprocess_text, remove_stopwords
 
+import codecs
 import sklearn
 import pickle
 import re
+import os
+import traceback
 
 import pandas as pd
 
@@ -20,6 +24,10 @@ import pandas as pd
 # Create your views here.
 @api_view(['POST'])
 def upload(request):
+
+	model = pickle.load(open('storage/models/model.pkl', 'rb'))
+	vectorizer = pickle.load(open('storage/models/vectorizer.pkl', 'rb'))
+
 
 	if request.method == 'POST':
 		files = request.FILES
@@ -31,25 +39,48 @@ def upload(request):
 			'Moderna': None
 		}
 
+		if os.path.exists('storage/uploads/pfizer/pfizer.csv'):
+				os.remove('storage/uploads/pfizer/pfizer.csv')
+
+		if os.path.exists('storage/uploads/sinovac/sinovac.csv'):
+				os.remove('storage/uploads/sinovac/sinovac.csv')
+
+		if os.path.exists('storage/uploads/astrazeneca/astrazeneca.csv'):
+				os.remove('storage/uploads/astrazeneca/astrazeneca.csv')
+
+		if os.path.exists('storage/uploads/moderna/moderna.csv'):
+				os.remove('storage/uploads/moderna/moderna.csv')
+
+		if os.path.exists('storage/uploads/pfizer/_pfizer.csv'):
+			os.remove('storage/uploads/pfizer/_pfizer.csv')
+
+		if os.path.exists('storage/uploads/sinovac/_sinovac.csv'):
+				os.remove('storage/uploads/sinovac/_sinovac.csv')
+
+		if os.path.exists('storage/uploads/astrazeneca/_astrazeneca.csv'):
+				os.remove('storage/uploads/astrazeneca/_astrazeneca.csv')
+
+		if os.path.exists('storage/uploads/moderna/_moderna.csv'):
+				os.remove('storage/uploads/moderna/_moderna.csv')
+
+
 		for file in files:
-			expected_files[file]  = files[file]
 
-		default_storage.delete('storage/uploads/pfizer/pfizer.csv')
-		default_storage.delete('storage/uploads/sinovac/sinovac.csv')
-		default_storage.delete('storage/uploads/astrazeneca/astrazeneca.csv')
-		default_storage.delete('storage/uploads/moderna/moderna.csv')
+			df = pd.read_csv(files[file], encoding='utf8')
+			df.to_csv('storage/uploads/' + file.lower() + '/' + file.lower() + '.csv')
 
-		if expected_files['Pfizer'] is not None:
-			path = default_storage.save('storage/uploads/pfizer/pfizer.csv', ContentFile(expected_files['Pfizer'].read()))
-		
-		if expected_files['Sinovac'] is not None:
-			path = default_storage.save('storage/uploads/sinovac/sinovac.csv', ContentFile(expected_files['Sinovac'].read()))
+			corpus = df
+			corpus = preprocess_text(corpus)
+			corpus = remove_stopwords(corpus)
+			
+			corpus = vectorizer.transform(corpus['Text'])
+			predictions = model.predict(corpus)
 
-		if expected_files['Astrazeneca'] is not None:
-			path = default_storage.save('storage/uploads/astrazeneca/astrazeneca.csv', ContentFile(expected_files['Astrazeneca'].read()))
+			predictions = pd.Series(predictions)
 
-		if expected_files['Moderna'] is not None:
-			path = default_storage.save('storage/uploads/moderna/moderna.csv', ContentFile(expected_files['Moderna'].read()))
+			df = pd.read_csv('storage/uploads/' + file.lower() + '/' + file.lower() + '.csv')
+			df['Sentiment'] = predictions.values
+			df.to_csv('storage/uploads/' + file.lower() + '/_' + file.lower() + '.csv')
 
 	return Response("test")
 
@@ -76,9 +107,6 @@ def data_overview(request):
 @api_view(['GET'])
 def sentiment_overview(request):
 
-	model = pickle.load(open('storage/models/model.pkl', 'rb'))
-	vectorizer = pickle.load(open('storage/models/vectorizer.pkl', 'rb'))
-
 	data = [
 		{
 			'name': 'pfizer',
@@ -120,14 +148,9 @@ def sentiment_overview(request):
 
 	for item in data:
 		try:
-			df = pd.read_csv('storage/uploads/' + item['name'] + '/' + item['name'] + '.csv')
-			df = preprocess_text(df)
-			df = remove_stopwords(df)
-			
-			corpus = vectorizer.transform(df['Text'])
-			predictions = model.predict(corpus)
-			
-			count_dict = dict(Counter(predictions))
+			df = pd.read_csv('storage/uploads/' + item['name'] + '/_' + item['name'] + '.csv')
+
+			count_dict = dict(Counter(df['Sentiment']))
 			item['sentiments'] = [
 				{
 					'positive': count_dict[1],
@@ -135,19 +158,18 @@ def sentiment_overview(request):
 				}
 			]
 
-		except:
+		except FileNotFoundError:
 			item['sentiments'] = None
-
-
-
+		except Exception as e:
+			raise APIException(repr(e))
 
 	return Response(data)
 
 @api_view(['GET'])
-def sentiment_overtime(request):
+def sentiment_trend(request):
 
-	model = pickle.load(open('storage/models/model.pkl', 'rb'))
-	vectorizer = pickle.load(open('storage/models/vectorizer.pkl', 'rb'))
+	# model = pickle.load(open('storage/models/model.pkl', 'rb'))
+	# vectorizer = pickle.load(open('storage/models/vectorizer.pkl', 'rb'))
 
 	data = [
 		{
@@ -170,7 +192,7 @@ def sentiment_overtime(request):
 
 	for item in data:
 		try:
-			df = pd.read_csv('storage/uploads/' + item['name'] + '/' + item['name'] + '.csv')
+			df = pd.read_csv('storage/uploads/' + item['name'] + '/_' + item['name'] + '.csv')
 
 			df_shape = df.shape
 			for i in range(df_shape[0]):
@@ -178,14 +200,14 @@ def sentiment_overtime(request):
 				s = s[0] + '/' + s[1]
 				df.at[i, 'Created-At'] = s
 			
-			df = preprocess_text(df)
-			df = remove_stopwords(df)
+			# df = preprocess_text(df)
+			# df = remove_stopwords(df)
 
-			corpus = vectorizer.transform(df['Text'])
-			predictions = model.predict(corpus)
+			# corpus = vectorizer.transform(df['Text'])
+			# predictions = model.predict(corpus)
 
-			predictions = pd.Series(predictions)
-			df['Sentiments'] = predictions.values
+			# predictions = pd.Series(predictions)
+			# df['Sentiments'] = predictions.values
 
 			labels = df['Created-At'].value_counts()
 			labels = labels.keys()
@@ -198,9 +220,9 @@ def sentiment_overtime(request):
 				pos_sentiments = 0
 				neg_sentiments = 0
 				for i in range(0, df_shape[0]):
-					if(df.at[i, 'Created-At'] == label and df.at[i, 'Sentiments'] == 1):
+					if(df.at[i, 'Created-At'] == label and df.at[i, 'Sentiment'] == 1):
 					 	pos_sentiments += 1
-					elif(df.at[i, 'Created-At'] == label and df.at[i, 'Sentiments'] == 0):
+					elif(df.at[i, 'Created-At'] == label and df.at[i, 'Sentiment'] == 0):
 					  	neg_sentiments += 1
 
 				positive_sentiments[label] = pos_sentiments
@@ -211,5 +233,38 @@ def sentiment_overtime(request):
 
 		except FileNotFoundError:
 			item['sentiments'] = None
+		except Exception as e:
+			raise APIException(repr(e))
 
 	return Response(data)
+
+@api_view(['GET'])
+def all_data(request):
+
+	frames = []
+
+	if os.path.exists('storage/uploads/pfizer/_pfizer.csv'):
+			frame_1 = pd.read_csv('storage/uploads/pfizer/_pfizer.csv')
+			frame_1 = frame_1[['Created-At','Text', 'Sentiment']]
+			frames.append(frame_1)
+
+	if os.path.exists('storage/uploads/sinovac/_sinovac.csv'):
+			frame_2 = pd.read_csv('storage/uploads/sinovac/_sinovac.csv')
+			frame_2 = frame_2[['Created-At','Text', 'Sentiment']]
+			frames.append(frame_2)
+
+	if os.path.exists('storage/uploads/astrazeneca/_astrazeneca.csv'):
+			frame_3 = pd.read_csv('storage/uploads/astrazeneca/_astrazeneca.csv')
+			frame_3 = frame_3[['Created-At','Text', 'Sentiment']]
+			frames.append(frame_3)
+
+	if os.path.exists('storage/uploads/moderna/_moderna.csv'):
+			frame_4 = pd.read_csv('storage/uploads/moderna/_moderna.csv')
+			frame_4 = frame_4[['Created-At','Text', 'Sentiment']]
+			frames.append(frame_4)
+
+	result = pd.concat(frames, ignore_index=True, sort=False)
+
+	return Response(result.to_json(orient='index'))
+
+

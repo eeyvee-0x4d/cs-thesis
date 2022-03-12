@@ -1,6 +1,8 @@
 import nltk
 import stopwordsiso
 import re
+import sklearn
+import pickle
 
 from nltk.stem import *
 from nltk.corpus import stopwords
@@ -38,5 +40,21 @@ def remove_stopwords(data_frame):
 
 		document = " ".join(filtered_sentence2)
 		data_frame.loc[i, 'Text'] = document
+
+	return data_frame
+
+def classify(data_frame):
+
+	model = pickle.load(open('storage/models/model.pkl', 'rb'))
+	vectorizer = pickle.load(open('storage/models/vectorizer.pkl', 'rb'))
+
+	corpus = preprocess_text(data_frame)
+	corpus = remove_stopwords(corpus)
+
+	corpus = vectorizer.transform(corpus['Text'])
+	predictions = model.predict(corpus)
+
+	predictions = pd.Series(predictions)
+	data_frame['Sentiments'] = predictions.values
 
 	return data_frame
