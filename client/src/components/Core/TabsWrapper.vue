@@ -48,7 +48,7 @@
 
 				this.isFetchingData = true;
 
-				let response = await axios.get(import.meta.env.VITE_DJANGO_BASE_URL + '/sentiment_overtime/')
+				let response = await axios.get(import.meta.env.VITE_DJANGO_BASE_URL + '/sentiment_trend/')
 
 				if (response.statusText !== "OK") {
 						throw new Error(`HTTP error! status: ${response.status}`)
@@ -86,8 +86,8 @@
 							data.push(value)
 						}
 
-						chartData.labels = labels
-						chartData.datasets[0].data = data
+						this.$refs.lineChart[index].chartData.labels = labels
+						this.$refs.lineChart[index].chartData.datasets[0].data = data
 
 						labels = []
 						data = []
@@ -97,10 +97,10 @@
 							data.push(value)
 						}
 
-						chartData.labels = labels
-						chartData.datasets[1].data = data
+						this.$refs.lineChart[index].chartData.labels = labels
+						this.$refs.lineChart[index].chartData.datasets[1].data = data
 
-						this.$refs.lineChart[index].chartData = chartData
+						// this.$refs.lineChart[index].chartData = chartData
 
 						this.isFetchingData = false;
 					});

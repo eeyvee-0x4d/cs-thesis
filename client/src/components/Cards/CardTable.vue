@@ -49,6 +49,11 @@
 		props: {
 			title: { type: String, dafault: "Title"}
 		},
+		methods: {
+			async fetchData() {
+				
+			}
+		},
 		data() {
 			const data = [
 				{

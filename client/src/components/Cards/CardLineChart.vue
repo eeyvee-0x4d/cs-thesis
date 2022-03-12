@@ -40,10 +40,14 @@
 				datasets: [
 					{
 						label: 'Positive',
+						backgroundColor: "#66bd63",
+						borderColor: "#66bd63",
 						data: []
 					},
 					{
 						label: 'Negative',
+						backgroundColor: "#f46d43",
+						borderColor: "#f46d43",
 						data: []
 					}
 				]
