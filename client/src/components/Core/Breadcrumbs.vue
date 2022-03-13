@@ -3,7 +3,7 @@
 		<ol class="inline-flex items-center space-x-1">
 			<li class="inline-flex items-center" aria-current="page">
 				<a class="text-gray-700 hover:text-gray-900 inline-flex items-center text-sm font-medium" href="/">
-					Data
+					Data Upload
 				</a>
 			</li>
 			<div>

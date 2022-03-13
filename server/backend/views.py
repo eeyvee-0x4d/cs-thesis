@@ -265,6 +265,26 @@ def all_data(request):
 
 	result = pd.concat(frames, ignore_index=True, sort=False)
 
-	return Response(result.to_json(orient='index'))
+	rows = result.shape[0]
+	# return Response(result.to_json(orient='index'))
+	page_number = 0 if (request.GET.get('page_number') is None) else int(request.GET.get('page_number')) - 1
+	page_size = 20 if (request.GET.get('page_size') is None) else int(request.GET.get('page_size'))
+
+	start = page_number * page_size
+	end = (start + page_size) if ((start + page_size) < rows) else rows
+	# print(result.iloc[start:end])
+
+	headers = {}
+	headers['Total-Count'] = rows
+	headers['Total-Pages'] = int(round(rows / page_size, 0))
+	headers['Current-Page'] = page_number + 1
+	headers['Page-Size'] = page_size
+	# print(headers)
+
+	data = result.iloc[start:end]
+	data = data.to_json(orient='index')
+
+	# print(result.iloc[0:10])
+	return Response(data=data, headers=headers)
 
 

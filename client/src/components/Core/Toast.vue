@@ -34,7 +34,17 @@
 			close(){
 				this.show = false
 			}
-		}
+		},
+		watch: {
+			show() {
+				if(this.show === true) {
+					setTimeout(() => {
+						this.show = false
+						console.log(this.show)
+					}, 3000)
+				}
+			}
+		} 
 	});
 </script>
 

@@ -60,7 +60,7 @@
 		mounted() {
 			this.fetchData()
 				.then(response => {
-					console.log(response)
+					// console.log(response)
 					response.data.forEach((item, index) => {
 						// console.log(this.$refs.lineChart[index].testData)
 

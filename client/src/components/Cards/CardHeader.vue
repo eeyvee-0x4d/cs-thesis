@@ -99,7 +99,7 @@
 		mounted() {
 			this.fetchData()
 				.then(response => {
-					console.log(response)
+					// console.log(response)
 
 					this.$refs.cardStat1.kpiHeader = 'Pfizer'
 					this.$refs.cardStat1.kpiBigNumber = (response.data.pfizer === null) ? 'n.d' : this.abbrNum(response.data.pfizer, 1)
