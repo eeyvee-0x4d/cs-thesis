@@ -66,7 +66,7 @@ def upload(request):
 
 		for file in files:
 
-			df = pd.read_csv(files[file], encoding='utf8')
+			df = pd.read_csv(files[file])
 			df.to_csv('storage/uploads/' + file.lower() + '/' + file.lower() + '.csv')
 
 			corpus = df
