@@ -2,6 +2,9 @@
 	<!-- Visualize start -->
 	<div class="flex flex-col space-y-4">
 		<div class="border border-4 rounded-lg text-center">
+			<CardModelStats />
+		</div>
+		<div class="border border-4 rounded-lg text-center">
 			<CardHeader />
 		</div>
 		<div class="border border-4 rounded-lg">
@@ -23,7 +26,8 @@
 	import CardHeader from '../components/Cards/CardHeader.vue';
 	import CardBarChart from '../components/Cards/CardBarChart.vue';
 	import TabsWrapper from '../components/Core/TabsWrapper.vue';
-	import CardTable from '../components/Cards/CardTable.vue'
+	import CardTable from '../components/Cards/CardTable.vue';
+	import CardModelStats from '../components/Cards/CardModelStats.vue';
 
 	export default defineComponent({
 		name: 'Visualization',
@@ -32,6 +36,7 @@
 			CardBarChart,
 			CardTable,
 			TabsWrapper,
+			CardModelStats,
 		}
 	})
 </script>

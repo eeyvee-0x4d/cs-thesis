@@ -17,6 +17,7 @@ import pickle
 import re
 import os
 import traceback
+import json
 
 import pandas as pd
 
@@ -287,4 +288,13 @@ def all_data(request):
 	# print(result.iloc[0:10])
 	return Response(data=data, headers=headers)
 
+@api_view(['GET'])
+def model_stats(request):
+
+	data = ''
+
+	with open('../server/storage/models/model_stats.json') as f:
+		data = json.load(f)
+
+	return Response(data)
 

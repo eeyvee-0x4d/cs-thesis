@@ -1,5 +1,5 @@
 <template>
-	<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-ld rounded-lg">
+	<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-ld rounded-lg divide-y divide-solid">
 		<div class="rounded-t mb-0 px-4 py-3 bg-transparent">
 			<div class="flex flex-wrap items-center">
 				<div class="relative w-full max-w-full flex-grow flex-1">
@@ -20,7 +20,31 @@
 						Loading data...
 					</span>
 				</div>
-				<BarChart v-else :chartData="chartData" />
+				<div v-else>
+					<div class="flex flex-auto py-4 place-content-evenly divide-x">
+						<div class="relative px-2">
+							<p class="text-base font-bold text-left"> Pfizer </p>
+							<p class="text-sm text-left"> Positive sentiments: {{ dataSummary.pfizer[0]}}% </p>
+							<p class="text-sm text-left"> Negative sentiments: {{ dataSummary.pfizer[1] }}% </p>
+						</div>
+						<div class="relative px-2">
+							<p class="text-base font-bold text-left"> Sinovac </p>
+							<p class="text-sm text-left"> Positive sentiments: {{ dataSummary.sinovac[0]}}% </p>
+							<p class="text-sm text-left"> Negative sentiments: {{ dataSummary.sinovac[1] }}% </p>						
+						</div>
+						<div class="relative px-2">
+							<p class="text-base font-bold text-left"> Astrazeneca </p>
+							<p class="text-sm text-left"> Positive sentiments: {{ dataSummary.astrazeneca[0]}}% </p>
+							<p class="text-sm text-left"> Negative sentiments: {{ dataSummary.astrazeneca[1] }}% </p>						
+						</div>
+						<div class="relative px-2">
+							<p class="text-base font-bold text-left"> Moderna </p>
+							<p class="text-sm text-left"> Positive sentiments: {{ dataSummary.moderna[0]}}% </p>
+							<p class="text-sm text-left"> Negative sentiments: {{ dataSummary.moderna[1] }}% </p>
+						</div>
+					</div>
+					<BarChart :chartData="chartData" />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -38,7 +62,7 @@
 	export default defineComponent({
 		name: 'CardBarChart',
 		components: {
-			BarChart
+			BarChart,
 		},
 		props: {
 			chartTitle: { type: String, default: 'Chart Title'}
@@ -91,11 +115,19 @@
 				}
 			};
 
+			let dataSummary = {
+				'pfizer': [],
+				'sinovac': [],
+				'astrazeneca': [],
+				'moderna': []
+			}
+
 			let fetchingData = false;
 
 			return {
 				chartData,
-				fetchingData
+				fetchingData,
+				dataSummary
 			};
 		},
 		mounted() {
@@ -123,15 +155,22 @@
 							this.chartData.labels.push((item.name.charAt(0).toUpperCase() + item.name.slice(1)))
 							this.chartData.datasets[0].data.push(item.sentiments[0]['positive'])
 							this.chartData.datasets[1].data.push(item.sentiments[0]['negative'])
+
+							let posPercentage = ((item.sentiments[0]['positive'] / (item.sentiments[0]['positive'] + item.sentiments[0]['negative'])) * 100).toFixed(2);
+							let negPercentage = ((item.sentiments[0]['negative'] / (item.sentiments[0]['positive'] + item.sentiments[0]['negative'])) * 100).toFixed(2);
+
+							this.dataSummary[item.name] = [posPercentage, negPercentage];
 						}
 						else {
 							this.chartData.labels.push((item.name.charAt(0).toUpperCase() + item.name.slice(1)))
 							this.chartData.datasets[0].data.push(0)
 							this.chartData.datasets[1].data.push(0)
-						}
 
-						this.fetchingData = false
+							this.dataSummary[item.name] = [null, null];
+						}
 					});
+				
+					this.fetchingData = false
 				})
 				.catch()
 		}
